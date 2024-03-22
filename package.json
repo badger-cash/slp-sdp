@@ -1,0 +1,13 @@
+{
+  "name": "slp-sdp",
+  "version": "1.0.0",
+  "description": "Encode and encrypt SDP data according to the Simple Ledger Session Description Protocol (SLSDP)",
+  "main": "index.js",
+  "repository": "https://github.com/badger-cash/slp-sdp.git",
+  "author": "Vin Armani <vin@vinarmani.com>",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@vinarmani/eccrypto-js": "^5.4.1"
+  }
+}
