@@ -1,6 +1,6 @@
 {
   "name": "slp-sdp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Encode and encrypt SDP data according to the Simple Ledger Session Description Protocol (SLSDP)",
   "main": "index.js",
   "repository": "https://github.com/badger-cash/slp-sdp.git",

@@ -94,7 +94,7 @@ const decryptedSdp = slpsdp.decryptSdp(encryptedSdp, privateKey)
 
 This software is licensed under the MIT License.
 
-Copyright Fedor Badger, 2024.
+Copyright Badger, 2024.
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the
