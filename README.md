@@ -23,7 +23,7 @@ git clone https://github.com/badger-cash/slp-sdp.git
 ## Usage
 
 ```js
-import * as slpsdp from "./index.js";
+import * as slpsdp from "slp-sdp";
 
 const sdp = 'v=0\r\n' +
 'o=rtc 1074756789 0 IN IP4 127.0.0.1\r\n' +
