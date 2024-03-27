@@ -77,32 +77,21 @@ const encodeSdp = (sdp) => {
             break
     }
 
-    const ufragBuf = Buffer.from(encObj['a=ice-ufrag'], 'utf-8')
-    const ufragLenBuf = Buffer.alloc(1)
-    ufragLenBuf.writeUint8(ufragBuf.length)
+    const ufragBuf = Buffer.from(encObj['a=ice-ufrag'], 'ascii')
     
-    const pwdBuf = Buffer.from(encObj['a=ice-pwd'], 'utf-8')
-    const pwdLenBuf = Buffer.alloc(1)
-    pwdLenBuf.writeUInt8(pwdBuf.length)
+    const pwdBuf = Buffer.from(encObj['a=ice-pwd'], 'ascii')
 
     const [, fullFingerprint] = encObj['a=fingerprint'].split(' ')
     const fingerprint = fullFingerprint.replaceAll(':', '')
     const fingerprintBuf = Buffer.from(fingerprint, 'hex')
 
-    const [ applicationInt ] = encObj['m=application'].split(' ', 1)
-    const applicationIntBuf = Buffer.alloc(4)
-    applicationIntBuf.writeUint32LE(applicationInt)
-
     const candidateBuf = encodeCandidate(encObj['a=candidate'])
 
     const encArr = [
         setupBuf,
-        ufragLenBuf,
         ufragBuf,
-        pwdLenBuf,
         pwdBuf,
         fingerprintBuf,
-        applicationIntBuf,
         candidateBuf
     ]
 
@@ -140,16 +129,12 @@ const decodeSdp = (encodedSdp) => {
     
     sdp += '\r\na=ice-ufrag:'
     offset += 1
-    const ufragLen = encodedSdp.readUint8(offset)
-    offset += 1
-    sdp += encodedSdp.subarray(offset, offset + ufragLen).toString('utf-8')
-    offset += ufragLen
+    sdp += encodedSdp.subarray(offset, offset + 4).toString('ascii')
+    offset += 4
 
     sdp += '\r\na=ice-pwd:'
-    const pwdLen = encodedSdp.readUint8(offset)
-    offset += 1
-    sdp += encodedSdp.subarray(offset, offset + pwdLen).toString('utf-8')
-    offset += pwdLen
+    sdp += encodedSdp.subarray(offset, offset + 22).toString('ascii')
+    offset += 22
 
     sdp += '\r\na=fingerprint:sha-256 '
     const fingerprintBuf = encodedSdp.subarray(offset, offset + 32)
@@ -158,9 +143,8 @@ const decodeSdp = (encodedSdp) => {
     offset += 32
 
     sdp += '\r\nm=application '
-    const applicationInt = encodedSdp.readUint32LE(offset)
+    const applicationInt = encodedSdp.readUint32LE(offset + 10)
     sdp += applicationInt + ' UDP/DTLS/SCTP webrtc-datachannel'
-    offset += 4
 
     sdp += '\r\na=candidate:'
     const encodedCandidate = encodedSdp.subarray(offset)
