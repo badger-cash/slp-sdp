@@ -1,0 +1,46 @@
+<html>
+    <head>
+        <script type="module">
+            import { encryptSdp, decryptSdp } from '/browser.js'
+            import { generateKeyPair } from 'https://esm.sh/@vinarmani/eccrypto-js@5.4.1'
+            const keys = generateKeyPair()
+
+            const pc = new RTCPeerConnection({
+                // STUN server required in config to generate proper SDP
+                iceServers: [{urls: "stun:stun3.l.google.com:19302"}],
+            });
+
+            // DataChannel required to generate proper ICE candidate
+			pc.createDataChannel('both', { reliable: true })
+
+            pc.onicegatheringstatechange = ev => {
+              let conn = ev.target
+			  switch (conn.iceGatheringState) {
+				case "new":
+				  console.log('gathering is either starting or reset')
+				case "gathering":
+				  console.log('collection of candidates has begun')
+				  break;
+				case "complete":
+				  //console.log('collection of candidates is finished')
+				  console.log('sdp:', pc.localDescription.sdp)
+				  const enc = encryptSdp(pc.localDescription.sdp, keys.publicKey)
+				  console.log('enc:', enc)
+				  const dec = decryptSdp(enc, keys.privateKey)
+				  console.log('dec:', dec)
+				  break;
+			  }
+			}
+            
+            pc.onicecandidate = (event) => {
+              if (event.candidate) console.log('ice event:', event.candidate)
+            }
+
+		    await pc.createOffer()
+		      .then(offer => pc.setLocalDescription(offer))
+        </script>
+    </head>
+    <body>
+        testing browser module; look in the console
+    </body>
+</html>
